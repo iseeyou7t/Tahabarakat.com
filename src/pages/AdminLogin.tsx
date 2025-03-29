@@ -13,8 +13,8 @@ import { Lock, User } from "lucide-react";
 
 // This is a simple admin authentication for demo purposes
 // In a real application, you should use a more secure approach
-const ADMIN_USERNAME = "admin";
-const ADMIN_PASSWORD = "password123";
+const ADMIN_USERNAME = "tahabarakat";
+const ADMIN_PASSWORD = "taha1234";
 
 const formSchema = z.object({
   username: z.string().min(1, "Username is required"),
