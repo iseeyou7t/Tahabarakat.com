@@ -1,11 +1,13 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Shield } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const isAdmin = localStorage.getItem("adminAuthenticated") === "true";
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -54,7 +56,7 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Menu */}
-          <nav className="hidden md:flex space-x-10">
+          <nav className="hidden md:flex space-x-6">
             <button
               onClick={() => scrollToSection("about")}
               className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
@@ -73,6 +75,10 @@ const Navbar = () => {
             >
               Contact
             </button>
+            <Link to={isAdmin ? "/admin/dashboard" : "/admin/login"} className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors flex items-center">
+              <Shield className="h-3.5 w-3.5 mr-1.5" />
+              {isAdmin ? "Admin" : "Admin Login"}
+            </Link>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -115,6 +121,13 @@ const Navbar = () => {
             >
               Contact
             </button>
+            <Link
+              to={isAdmin ? "/admin/dashboard" : "/admin/login"}
+              className="flex items-center w-full text-left px-3 py-2 text-base font-medium text-foreground/80 hover:text-foreground hover:bg-muted/50 rounded-md transition-colors"
+            >
+              <Shield className="h-4 w-4 mr-2" />
+              {isAdmin ? "Admin Dashboard" : "Admin Login"}
+            </Link>
           </div>
         </div>
       )}

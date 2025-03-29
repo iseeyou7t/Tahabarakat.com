@@ -1,8 +1,9 @@
-
 import { Link } from "react-router-dom";
 import { Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+// This component is no longer used in the main layout as it's integrated into the navbar
+// Keeping it for reference or in case it needs to be used elsewhere
 const AdminLink = () => {
   const isAdmin = localStorage.getItem("adminAuthenticated") === "true";
   
