@@ -1,4 +1,3 @@
-
 import React from "react";
 import Navbar from "@/components/Navbar";
 import Weather from "@/components/Weather";
@@ -9,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ArrowDown, Code, PenTool, Layout, Laptop } from "lucide-react";
+import AdminLink from "@/components/AdminLink";
 
 const Index = () => {
   return (
