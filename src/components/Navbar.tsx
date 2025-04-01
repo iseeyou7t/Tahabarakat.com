@@ -1,13 +1,14 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Shield } from "lucide-react";
+import { Menu, X, Shield, UserCog } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isAdmin = localStorage.getItem("adminAuthenticated") === "true";
+  const isOwner = localStorage.getItem("ownerAuthenticated") === "true";
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -37,6 +38,23 @@ const Navbar = () => {
       });
     }
     setIsMobileMenuOpen(false);
+  };
+
+  const getAdminLink = () => {
+    if (isOwner) return "/owner/dashboard";
+    if (isAdmin) return "/admin/dashboard";
+    return "/admin/login";
+  };
+
+  const getAdminText = () => {
+    if (isOwner) return "Owner Dashboard";
+    if (isAdmin) return "Admin Dashboard";
+    return "Admin Login";
+  };
+
+  const getAdminIcon = () => {
+    if (isOwner) return <UserCog className="h-3.5 w-3.5 mr-1.5" />;
+    return <Shield className="h-3.5 w-3.5 mr-1.5" />;
   };
 
   return (
@@ -75,10 +93,22 @@ const Navbar = () => {
             >
               Contact
             </button>
-            <Link to={isAdmin ? "/admin/dashboard" : "/admin/login"} className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors flex items-center">
-              <Shield className="h-3.5 w-3.5 mr-1.5" />
-              {isAdmin ? "Admin" : "Admin Login"}
+            <Link to={getAdminLink()} className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors flex items-center">
+              {getAdminIcon()}
+              {getAdminText()}
             </Link>
+            {!isOwner && isAdmin && (
+              <Link to="/owner/login" className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors flex items-center">
+                <UserCog className="h-3.5 w-3.5 mr-1.5" />
+                Owner Login
+              </Link>
+            )}
+            {!isOwner && !isAdmin && (
+              <Link to="/owner/login" className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors flex items-center">
+                <UserCog className="h-3.5 w-3.5 mr-1.5" />
+                Owner Login
+              </Link>
+            )}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -122,12 +152,21 @@ const Navbar = () => {
               Contact
             </button>
             <Link
-              to={isAdmin ? "/admin/dashboard" : "/admin/login"}
+              to={getAdminLink()}
               className="flex items-center w-full text-left px-3 py-2 text-base font-medium text-foreground/80 hover:text-foreground hover:bg-muted/50 rounded-md transition-colors"
             >
-              <Shield className="h-4 w-4 mr-2" />
-              {isAdmin ? "Admin Dashboard" : "Admin Login"}
+              {isOwner ? <UserCog className="h-4 w-4 mr-2" /> : <Shield className="h-4 w-4 mr-2" />}
+              {getAdminText()}
             </Link>
+            {!isOwner && (
+              <Link
+                to="/owner/login"
+                className="flex items-center w-full text-left px-3 py-2 text-base font-medium text-foreground/80 hover:text-foreground hover:bg-muted/50 rounded-md transition-colors"
+              >
+                <UserCog className="h-4 w-4 mr-2" />
+                Owner Login
+              </Link>
+            )}
           </div>
         </div>
       )}
