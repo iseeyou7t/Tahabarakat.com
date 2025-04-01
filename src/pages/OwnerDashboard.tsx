@@ -25,9 +25,11 @@ import {
   UsersTab,
   AdminsTab,
   SettingsTab,
-  SystemTab
+  SystemTab,
+  AdvancedPowerPanel,
+  AnimatedBackground
 } from "@/components/owner";
-import AdvancedPowerPanel from "@/components/owner/AdvancedPowerPanel";
+import SoundEffects from "@/components/SoundEffects";
 
 const OwnerDashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -57,6 +59,7 @@ const OwnerDashboard = () => {
   const [customCSS, setCustomCSS] = useState("");
   const [customJS, setCustomJS] = useState("");
   const [backupSchedule, setBackupSchedule] = useState("daily");
+  const [activeTab, setActiveTab] = useState("dashboard");
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -110,8 +113,31 @@ const OwnerDashboard = () => {
       navigate("/owner/login");
     } else {
       setIsAuthenticated(true);
+      
+      // Show welcome toast
+      toast({
+        title: "Welcome, System Owner",
+        description: "All systems operational. You have full control.",
+      });
+      
+      // Simulate real-time updates
+      const interval = setInterval(() => {
+        // Random variation to CPU and memory usage
+        setServerStatus(prev => ({
+          ...prev,
+          cpu: Math.min(95, Math.max(5, prev.cpu + (Math.random() * 6 - 3))),
+          memory: Math.min(95, Math.max(5, prev.memory + (Math.random() * 4 - 2))),
+          network: Math.min(95, Math.max(5, prev.network + (Math.random() * 8 - 4))),
+        }));
+        
+        // Random variation to active users
+        const userVariation = Math.floor(Math.random() * 3) - 1; // -1, 0, or 1
+        setActiveUsers(prev => Math.max(1, prev + userVariation));
+      }, 5000);
+      
+      return () => clearInterval(interval);
     }
-  }, [navigate]);
+  }, [navigate, toast]);
 
   const handleLogout = () => {
     localStorage.removeItem("ownerAuthenticated");
@@ -217,113 +243,133 @@ const OwnerDashboard = () => {
       description: "All security settings have been restored to defaults",
     });
   };
+  
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    
+    // Add a small toast for entering command centers
+    if (value === "power") {
+      toast({
+        title: "Advanced Command Center",
+        description: "Accessing high-level system operations.",
+      });
+    } 
+  };
 
   if (!isAuthenticated) {
     return null; // Will redirect via useEffect
   }
 
   return (
-    <div className="container mx-auto p-4 md:p-8 space-y-6">
-      <DashboardHeader handleLogout={handleLogout} />
+    <div className="relative min-h-screen bg-background/80 backdrop-blur-sm">
+      <AnimatedBackground />
+      <SoundEffects />
+      
+      <div className="container mx-auto p-4 md:p-8 space-y-6">
+        <DashboardHeader handleLogout={handleLogout} />
 
-      <Tabs defaultValue="dashboard" className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="dashboard">
-            <BarChart2 className="mr-2 h-4 w-4" />
-            Dashboard
-          </TabsTrigger>
-          <TabsTrigger value="users">
-            <Users className="mr-2 h-4 w-4" />
-            Users
-          </TabsTrigger>
-          <TabsTrigger value="admins">
-            <ShieldAlert className="mr-2 h-4 w-4" />
-            Admins
-          </TabsTrigger>
-          <TabsTrigger value="settings">
-            <Settings className="mr-2 h-4 w-4" />
-            Settings
-          </TabsTrigger>
-          <TabsTrigger value="system">
-            <Server className="mr-2 h-4 w-4" />
-            System
-          </TabsTrigger>
-          <TabsTrigger value="power" className="bg-primary/10 hover:bg-primary/20">
-            <Zap className="mr-2 h-4 w-4 text-primary" />
-            Powers
-          </TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="dashboard" className="space-y-4 mt-6">
-          <DashboardOverview 
-            activeUsers={activeUsers} 
-            serverStatus={serverStatus} 
-            securityLevel={securityLevel} 
-          />
+        <Tabs defaultValue="dashboard" value={activeTab} onValueChange={handleTabChange} className="w-full">
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="dashboard" className="data-[state=active]:animate-pulse">
+              <BarChart2 className="mr-2 h-4 w-4" />
+              Dashboard
+            </TabsTrigger>
+            <TabsTrigger value="users" className="data-[state=active]:animate-pulse">
+              <Users className="mr-2 h-4 w-4" />
+              Users
+            </TabsTrigger>
+            <TabsTrigger value="admins" className="data-[state=active]:animate-pulse">
+              <ShieldAlert className="mr-2 h-4 w-4" />
+              Admins
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="data-[state=active]:animate-pulse">
+              <Settings className="mr-2 h-4 w-4" />
+              Settings
+            </TabsTrigger>
+            <TabsTrigger value="system" className="data-[state=active]:animate-pulse">
+              <Server className="mr-2 h-4 w-4" />
+              System
+            </TabsTrigger>
+            <TabsTrigger 
+              value="power" 
+              className="bg-primary/10 hover:bg-primary/20 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:animate-pulse"
+            >
+              <Zap className="mr-2 h-4 w-4 text-primary data-[state=active]:text-primary-foreground" />
+              Powers
+            </TabsTrigger>
+          </TabsList>
           
-          <DashboardCharts 
-            visitData={visitData}
-            userTypeData={userTypeData}
-            serverLoadHistory={serverLoadHistory}
-            securityEvents={securityEvents}
-          />
-        </TabsContent>
-        
-        <TabsContent value="users" className="space-y-4 mt-6">
-          <UsersTab 
-            activeUsers={activeUsers}
-            handleKickUser={handleKickUser}
-            pageViewData={pageViewData}
-          />
-        </TabsContent>
-        
-        <TabsContent value="admins" className="space-y-4 mt-6">
-          <AdminsTab
-            adminCredentials={adminCredentials}
-            setAdminCredentials={setAdminCredentials}
-            updateAdminCredentials={updateAdminCredentials}
-            isSaving={isSaving}
-          />
-        </TabsContent>
-        
-        <TabsContent value="settings" className="space-y-4 mt-6">
-          <SettingsTab
-            websiteTitle={websiteTitle}
-            setWebsiteTitle={setWebsiteTitle}
-            theme={theme}
-            setTheme={setTheme}
-            analyticsEnabled={analyticsEnabled}
-            setAnalyticsEnabled={setAnalyticsEnabled}
-            maintenanceMode={maintenanceMode}
-            toggleMaintenanceMode={toggleMaintenanceMode}
-            apiKeys={apiKeys}
-            updateAPIKey={updateAPIKey}
-            customCSS={customCSS}
-            setCustomCSS={setCustomCSS}
-            customJS={customJS}
-            setCustomJS={setCustomJS}
-            handleSaveSettings={handleSaveSettings}
-            saveCustomCode={saveCustomCode}
-            isSaving={isSaving}
-          />
-        </TabsContent>
-        
-        <TabsContent value="system" className="space-y-4 mt-6">
-          <SystemTab
-            serverStatus={serverStatus}
-            lastBackup={lastBackup}
-            handleBackup={handleBackup}
-            securityLevel={securityLevel}
-            resetSecuritySettings={resetSecuritySettings}
-            backupSchedule={backupSchedule}
-            toggleBackupSchedule={toggleBackupSchedule}
-          />
-        </TabsContent>
-        
-        <TabsContent value="power" className="space-y-4 mt-6">
-          <AdvancedPowerPanel />
-        </TabsContent>
-      </Tabs>
+          <TabsContent value="dashboard" className="space-y-4 mt-6 animate-fade-in">
+            <DashboardOverview 
+              activeUsers={activeUsers} 
+              serverStatus={serverStatus} 
+              securityLevel={securityLevel} 
+            />
+            
+            <DashboardCharts 
+              visitData={visitData}
+              userTypeData={userTypeData}
+              serverLoadHistory={serverLoadHistory}
+              securityEvents={securityEvents}
+            />
+          </TabsContent>
+          
+          <TabsContent value="users" className="space-y-4 mt-6 animate-fade-in">
+            <UsersTab 
+              activeUsers={activeUsers}
+              handleKickUser={handleKickUser}
+              pageViewData={pageViewData}
+            />
+          </TabsContent>
+          
+          <TabsContent value="admins" className="space-y-4 mt-6 animate-fade-in">
+            <AdminsTab
+              adminCredentials={adminCredentials}
+              setAdminCredentials={setAdminCredentials}
+              updateAdminCredentials={updateAdminCredentials}
+              isSaving={isSaving}
+            />
+          </TabsContent>
+          
+          <TabsContent value="settings" className="space-y-4 mt-6 animate-fade-in">
+            <SettingsTab
+              websiteTitle={websiteTitle}
+              setWebsiteTitle={setWebsiteTitle}
+              theme={theme}
+              setTheme={setTheme}
+              analyticsEnabled={analyticsEnabled}
+              setAnalyticsEnabled={setAnalyticsEnabled}
+              maintenanceMode={maintenanceMode}
+              toggleMaintenanceMode={toggleMaintenanceMode}
+              apiKeys={apiKeys}
+              updateAPIKey={updateAPIKey}
+              customCSS={customCSS}
+              setCustomCSS={setCustomCSS}
+              customJS={customJS}
+              setCustomJS={setCustomJS}
+              handleSaveSettings={handleSaveSettings}
+              saveCustomCode={saveCustomCode}
+              isSaving={isSaving}
+            />
+          </TabsContent>
+          
+          <TabsContent value="system" className="space-y-4 mt-6 animate-fade-in">
+            <SystemTab
+              serverStatus={serverStatus}
+              lastBackup={lastBackup}
+              handleBackup={handleBackup}
+              securityLevel={securityLevel}
+              resetSecuritySettings={resetSecuritySettings}
+              backupSchedule={backupSchedule}
+              toggleBackupSchedule={toggleBackupSchedule}
+            />
+          </TabsContent>
+          
+          <TabsContent value="power" className="space-y-4 mt-6 animate-fade-in">
+            <AdvancedPowerPanel />
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 };

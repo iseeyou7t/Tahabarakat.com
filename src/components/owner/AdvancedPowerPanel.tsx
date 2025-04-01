@@ -1,12 +1,12 @@
 
-import { useState } from 'react';
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
-import { CornerUpRight, Shield, Wand2, Zap, RotateCw, AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { 
+import { useToast } from "@/hooks/use-toast";
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -17,258 +17,562 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Shield,
+  Lock,
+  Users,
+  Radio,
+  Zap,
+  Activity,
+  AlertTriangle,
+  Eye,
+  EyeOff,
+  Fingerprint,
+  Key,
+  Network,
+  ScanFace,
+  Siren,
+  Trash,
+  Radar,
+  BellRing,
+  Database,
+  Power,
+  UserX,
+  Wifi,
+  Loader,
+  Bot,
+  MessageSquare,
+  ArrowUpDown,
+  Search
+} from "lucide-react";
 
 const AdvancedPowerPanel = () => {
   const { toast } = useToast();
-  const [advancedModeEnabled, setAdvancedModeEnabled] = useState(false);
-  const [debugMode, setDebugMode] = useState(false);
-  const [superAdminAccess, setSuperAdminAccess] = useState(false);
-  const [cooldownStatus, setCooldownStatus] = useState<Record<string, boolean>>({});
+  const [lockdownMode, setLockdownMode] = useState(false);
+  const [stealthMode, setStealthMode] = useState(false);
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [aiModeration, setAiModeration] = useState(true);
+  const [threatLevel, setThreatLevel] = useState(14);
+  const [serverLoad, setServerLoad] = useState(28);
+  const [userActivity, setUserActivity] = useState(6423);
+  const [scanningSystem, setScanningSystem] = useState(false);
+  const [powerLevel, setPowerLevel] = useState(85);
 
-  const powerActions = [
-    {
-      id: 'optimize-db',
-      name: 'Optimize Database',
-      description: 'Run database optimization queries to improve performance',
-      icon: <RotateCw className="h-5 w-5" />,
-      severity: 'low',
-      cooldown: 5000,
-      action: () => {
-        toast({
-          title: "Database Optimization Started",
-          description: "Running optimization routines...",
-        });
-        
-        setTimeout(() => {
-          toast({
-            title: "Database Optimized",
-            description: "All tables have been optimized and indexes rebuilt",
-          });
-        }, 2000);
-      }
-    },
-    {
-      id: 'force-logout',
-      name: 'Force Logout All Users',
-      description: 'Immediately log out all active users from the website',
-      icon: <Shield className="h-5 w-5" />,
-      severity: 'medium',
-      cooldown: 8000,
-      action: () => {
-        toast({
-          title: "Force Logout Initiated",
-          description: "All users are being logged out...",
-        });
-        
-        setTimeout(() => {
-          toast({
-            title: "Force Logout Complete",
-            description: "All user sessions have been terminated",
-          });
-        }, 1500);
-      }
-    },
-    {
-      id: 'emergency-lock',
-      name: 'Emergency Lockdown',
-      description: 'Restrict all access to the website except for owners',
-      icon: <AlertTriangle className="h-5 w-5" />,
-      severity: 'high',
-      cooldown: 10000,
-      action: () => {
-        toast({
-          title: "⚠️ EMERGENCY LOCKDOWN ACTIVATED",
-          description: "Website is now in lockdown mode. Only owners can access.",
-          variant: "destructive"
-        });
-      }
-    },
-    {
-      id: 'super-admin',
-      name: 'Grant Super Admin Powers',
-      description: 'Temporarily elevate all admin accounts to owner-level privileges',
-      icon: <Wand2 className="h-5 w-5" />,
-      severity: 'extreme',
-      cooldown: 15000,
-      action: () => {
-        setSuperAdminAccess(true);
-        toast({
-          title: "Super Admin Mode Activated",
-          description: "All admins now have owner-level privileges for 5 minutes",
-        });
-        
-        setTimeout(() => {
-          setSuperAdminAccess(false);
-          toast({
-            title: "Super Admin Mode Deactivated",
-            description: "Admin privileges have been restored to normal",
-          });
-        }, 10000); // Reduced for demo purposes
-      }
-    },
-    {
-      id: 'system-boost',
-      name: 'Boost System Resources',
-      description: 'Allocate additional server resources for improved performance',
-      icon: <Zap className="h-5 w-5" />,
-      severity: 'medium',
-      cooldown: 12000,
-      action: () => {
-        toast({
-          title: "System Boost Initiated",
-          description: "Allocating additional resources to the server...",
-        });
-        
-        setTimeout(() => {
-          toast({
-            title: "System Resources Boosted",
-            description: "Server performance has been enhanced for the next hour",
-          });
-        }, 2500);
-      }
-    },
+  // Sample data for real-time metrics
+  const securityEvents = [
+    { time: "12:31:05", event: "Login attempt from blocked IP (203.0.113.12)", severity: "high" },
+    { time: "12:15:45", event: "New API key generated by admin", severity: "info" },
+    { time: "11:52:18", event: "User account locked after 5 failed attempts", severity: "medium" },
+    { time: "11:23:09", event: "Unusual traffic pattern detected", severity: "medium" },
+    { time: "10:41:37", event: "Unauthorized admin action attempted", severity: "high" },
   ];
 
-  const handlePowerAction = (id: string, action: () => void, cooldown: number) => {
-    if (cooldownStatus[id]) return;
+  const lastLocationData = [
+    { location: "United States", count: 1243 },
+    { location: "Germany", count: 582 },
+    { location: "Japan", count: 441 },
+    { location: "United Kingdom", count: 327 },
+    { location: "Canada", count: 289 },
+  ];
+
+  const activateEmergencyLockdown = () => {
+    setLockdownMode(true);
+    toast({
+      title: "EMERGENCY LOCKDOWN ACTIVATED",
+      description: "All users have been kicked. System is in lockdown mode.",
+      variant: "destructive",
+    });
     
-    // Set cooldown
-    setCooldownStatus(prev => ({ ...prev, [id]: true }));
+    // Increment threat level to simulate alert state
+    setThreatLevel(prev => Math.min(prev + 20, 100));
     
-    // Execute action
-    action();
-    
-    // Reset cooldown after delay
+    // Simulate automatic DDoS protection activation
     setTimeout(() => {
-      setCooldownStatus(prev => ({ ...prev, [id]: false }));
-    }, cooldown);
+      toast({
+        title: "DDoS Protection Engaged",
+        description: "Firewall rules updated. Traffic filtering enabled.",
+      });
+    }, 2000);
   };
 
-  const getSeverityColor = (severity: string) => {
-    switch(severity) {
-      case 'low': return 'bg-blue-500/10 text-blue-500 border-blue-500/30';
-      case 'medium': return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/30';
-      case 'high': return 'bg-orange-500/10 text-orange-500 border-orange-500/30';
-      case 'extreme': return 'bg-red-500/10 text-red-500 border-red-500/30';
-      default: return 'bg-gray-500/10 text-gray-500 border-gray-500/30';
+  const deactivateEmergencyLockdown = () => {
+    setLockdownMode(false);
+    toast({
+      title: "Emergency Lockdown Deactivated",
+      description: "System returning to normal operation. Users can now log in.",
+    });
+    
+    // Gradually reduce threat level
+    setTimeout(() => setThreatLevel(prev => Math.max(prev - 10, 14)), 2000);
+  };
+
+  const toggleStealthMode = () => {
+    setStealthMode(!stealthMode);
+    toast({
+      title: stealthMode ? "Stealth Mode Deactivated" : "Stealth Mode Activated",
+      description: stealthMode 
+        ? "Admins now appear online to users" 
+        : "Admins now appear offline to all users",
+    });
+  };
+
+  const toggleMaintenanceMode = () => {
+    setMaintenanceMode(!maintenanceMode);
+    toast({
+      title: maintenanceMode ? "Maintenance Mode Disabled" : "Maintenance Mode Enabled",
+      description: maintenanceMode 
+        ? "Website is now accessible to all users" 
+        : "Website is now in maintenance mode. Only admins can access.",
+    });
+  };
+
+  const kickAllUsers = () => {
+    toast({
+      title: "Global User Kick Initiated",
+      description: "All users have been logged out from the system.",
+    });
+    setUserActivity(0);
+    
+    // Simulate users gradually reconnecting
+    setTimeout(() => {
+      setUserActivity(342);
+      toast({
+        title: "Users Reconnecting",
+        description: "342 users have reconnected to the system.",
+      });
+    }, 5000);
+  };
+
+  const toggleAiModeration = () => {
+    setAiModeration(!aiModeration);
+    toast({
+      title: aiModeration ? "AI Moderation Disabled" : "AI Moderation Enabled",
+      description: aiModeration 
+        ? "Manual content moderation now required" 
+        : "AI will automatically flag inappropriate content",
+    });
+  };
+
+  const runSecurityScan = () => {
+    setScanningSystem(true);
+    toast({
+      title: "Security Scan Initiated",
+      description: "Full system scan in progress. This may take a few minutes.",
+    });
+    
+    // Simulate scan completion
+    setTimeout(() => {
+      setScanningSystem(false);
+      setThreatLevel(Math.max(threatLevel - 5, 5));
+      toast({
+        title: "Security Scan Complete",
+        description: "No critical vulnerabilities found. 2 warnings addressed.",
+      });
+    }, 6000);
+  };
+
+  const forceBackup = () => {
+    toast({
+      title: "Emergency Backup Initiated",
+      description: "Creating full system backup across multiple secure locations.",
+    });
+    
+    // Simulate backup completion
+    setTimeout(() => {
+      toast({
+        title: "Backup Complete",
+        description: "System data successfully backed up to 3 secure locations.",
+      });
+    }, 4000);
+  };
+
+  const regenerateSecurityKeys = () => {
+    toast({
+      title: "Security Key Regeneration",
+      description: "All API keys and security tokens are being rotated.",
+    });
+    
+    // Simulate completion
+    setTimeout(() => {
+      toast({
+        title: "Security Keys Updated",
+        description: "All security credentials have been regenerated successfully.",
+      });
+    }, 3000);
+  };
+
+  const boostServerPower = () => {
+    if (powerLevel < 95) {
+      setPowerLevel(prev => prev + 10);
+      setServerLoad(prev => Math.max(prev - 10, 5));
+      
+      toast({
+        title: "Server Power Boosted",
+        description: "Additional server resources allocated. Performance improved.",
+      });
+    } else {
+      toast({
+        title: "Maximum Power Already Allocated",
+        description: "Server is already running at maximum capacity.",
+        variant: "destructive",
+      });
     }
   };
 
   return (
-    <Card className="border-2 border-primary/20 shadow-lg">
-      <CardHeader className="bg-primary/5">
-        <CardTitle className="flex items-center gap-2">
-          <Zap className="h-5 w-5 text-primary" />
-          Advanced Owner Powers
-        </CardTitle>
-        <CardDescription>
-          Special administrative controls with extensive capabilities
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4 pt-4">
-        <div className="flex justify-between items-center p-3 border rounded-lg bg-muted/30">
-          <div>
-            <h4 className="font-medium">Advanced Mode</h4>
-            <p className="text-sm text-muted-foreground">Enable powerful owner-only tools</p>
+    <div className="space-y-6 animate-fade-in">
+      {/* Emergency Controls Panel */}
+      <Card className={`border-2 ${lockdownMode ? 'border-destructive animate-pulse' : 'border-border'}`}>
+        <CardHeader className="space-y-1">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-2xl font-bold flex items-center">
+              <Shield className="mr-2 h-6 w-6 text-destructive" />
+              Emergency Controls
+            </CardTitle>
+            {lockdownMode && (
+              <Badge variant="destructive" className="animate-pulse">LOCKDOWN ACTIVE</Badge>
+            )}
           </div>
-          <Switch 
-            checked={advancedModeEnabled} 
-            onCheckedChange={setAdvancedModeEnabled}
-          />
-        </div>
-        
-        {advancedModeEnabled && (
-          <>
-            <div className="flex justify-between items-center p-3 border rounded-lg bg-muted/30">
-              <div>
-                <h4 className="font-medium">Debug Mode</h4>
-                <p className="text-sm text-muted-foreground">Show technical details and logs</p>
+          <CardDescription>
+            Extreme security measures for emergency situations
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" size="lg" className="w-full">
+                  <Siren className="mr-2 h-5 w-5" />
+                  {lockdownMode ? "Deactivate Lockdown" : "Emergency Lockdown"}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    {lockdownMode ? "Deactivate Emergency Lockdown?" : "Activate Emergency Lockdown?"}
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {lockdownMode 
+                      ? "This will restore normal system operation and allow users to log in again."
+                      : "This will immediately log out ALL users including admins and prevent any new logins except for owner accounts."}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={lockdownMode ? deactivateEmergencyLockdown : activateEmergencyLockdown}>
+                    {lockdownMode ? "Deactivate" : "Activate Lockdown"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+            <Button variant="outline" size="lg" className="w-full" onClick={toggleStealthMode}>
+              {stealthMode ? <Eye className="mr-2 h-5 w-5" /> : <EyeOff className="mr-2 h-5 w-5" />}
+              {stealthMode ? "Disable Stealth Mode" : "Enable Stealth Mode"}
+            </Button>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" size="lg" className="w-full">
+                  <UserX className="mr-2 h-5 w-5" />
+                  Force Logout All Users
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Logout All Users?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will immediately terminate all active user sessions across the entire platform.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={kickAllUsers}>
+                    Confirm Logout
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div className="flex items-center">
+                <Fingerprint className="mr-2 h-5 w-5 text-primary" />
+                <div>
+                  <p className="font-medium">Physical Security Key</p>
+                  <p className="text-sm text-muted-foreground">Backup access method</p>
+                </div>
               </div>
-              <Switch 
-                checked={debugMode} 
-                onCheckedChange={setDebugMode}
-              />
+              <Badge variant="outline" className="text-green-500">Ready</Badge>
             </div>
             
-            <div className="border rounded-lg p-3">
-              <h3 className="font-semibold mb-3 flex items-center gap-2">
-                <Shield className="h-4 w-4" /> Power Actions
-                {superAdminAccess && (
-                  <Badge className="ml-2 bg-red-500/20 text-red-500 border border-red-500/30">Super Admin Active</Badge>
-                )}
+            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div className="flex items-center">
+                <Lock className="mr-2 h-5 w-5 text-primary" />
+                <div>
+                  <p className="font-medium">Maintenance Mode</p>
+                  <p className="text-sm text-muted-foreground">Restrict to admins only</p>
+                </div>
+              </div>
+              <Switch checked={maintenanceMode} onCheckedChange={toggleMaintenanceMode} />
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center">
+                <AlertTriangle className="mr-2 h-5 w-5 text-amber-500" />
+                <span className="font-medium">Current Threat Level</span>
+              </div>
+              <Badge 
+                variant={threatLevel > 50 ? "destructive" : threatLevel > 30 ? "secondary" : "outline"}
+                className={threatLevel > 50 ? "animate-pulse" : ""}
+              >
+                {threatLevel > 50 ? "High" : threatLevel > 30 ? "Elevated" : "Normal"}
+              </Badge>
+            </div>
+            <Progress value={threatLevel} className={`h-2 ${threatLevel > 50 ? 'bg-red-200' : ''}`} />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Security Operations Panel */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl font-bold flex items-center">
+            <Activity className="mr-2 h-5 w-5 text-primary" />
+            Security Operations
+          </CardTitle>
+          <CardDescription>
+            Advanced security controls and operational tools
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <Button 
+              variant="outline" 
+              className="h-auto py-3 flex flex-col items-center justify-center space-y-2"
+              onClick={runSecurityScan}
+              disabled={scanningSystem}
+            >
+              {scanningSystem ? (
+                <Loader className="h-5 w-5 animate-spin text-primary" />
+              ) : (
+                <Radar className="h-5 w-5 text-primary" />
+              )}
+              <div className="text-sm font-medium">
+                {scanningSystem ? "Scanning..." : "Run Security Scan"}
+              </div>
+            </Button>
+
+            <Button 
+              variant="outline" 
+              className="h-auto py-3 flex flex-col items-center justify-center space-y-2"
+              onClick={forceBackup}
+            >
+              <Database className="h-5 w-5 text-primary" />
+              <div className="text-sm font-medium">Force System Backup</div>
+            </Button>
+
+            <Button 
+              variant="outline" 
+              className="h-auto py-3 flex flex-col items-center justify-center space-y-2"
+              onClick={regenerateSecurityKeys}
+            >
+              <Key className="h-5 w-5 text-primary" />
+              <div className="text-sm font-medium">Regenerate Security Keys</div>
+            </Button>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div className="flex items-center">
+                <Bot className="mr-2 h-5 w-5 text-primary" />
+                <div>
+                  <p className="font-medium">AI Content Moderation</p>
+                  <p className="text-sm text-muted-foreground">Automatically flag inappropriate content</p>
+                </div>
+              </div>
+              <Switch checked={aiModeration} onCheckedChange={toggleAiModeration} />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div>
+              <h3 className="font-medium mb-2 flex items-center">
+                <BellRing className="mr-2 h-4 w-4 text-amber-500" />
+                Latest Security Events
               </h3>
-              <div className="grid gap-3">
-                {powerActions.map((power) => (
-                  <AlertDialog key={power.id}>
-                    <AlertDialogTrigger asChild>
-                      <button 
-                        className={`w-full p-3 border rounded-lg flex items-center justify-between transition-all ${
-                          cooldownStatus[power.id] 
-                            ? 'opacity-50 cursor-not-allowed' 
-                            : 'hover:bg-muted/50 hover:border-primary/20'
-                        }`}
-                        disabled={cooldownStatus[power.id]}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                            {power.icon}
-                          </div>
-                          <div className="text-left">
-                            <h4 className="font-medium">{power.name}</h4>
-                            <p className="text-xs text-muted-foreground">{power.description}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center">
-                          <Badge variant="outline" className={getSeverityColor(power.severity)}>
-                            {power.severity}
-                          </Badge>
-                          <CornerUpRight className="h-4 w-4 ml-2 text-muted-foreground" />
-                        </div>
-                      </button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone. This will affect how the website functions and may impact users.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handlePowerAction(power.id, power.action, power.cooldown)}>
-                          Continue
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+              <div className="max-h-[200px] overflow-y-auto pr-2 space-y-2">
+                {securityEvents.map((event, index) => (
+                  <div 
+                    key={index} 
+                    className={`p-2 text-sm border-l-2 ${
+                      event.severity === 'high' ? 'border-destructive bg-destructive/10' : 
+                      event.severity === 'medium' ? 'border-amber-500 bg-amber-500/10' : 
+                      'border-primary bg-primary/10'
+                    }`}
+                  >
+                    <div className="flex justify-between">
+                      <span className="font-mono">{event.time}</span>
+                      <Badge variant="outline" className="text-xs">
+                        {event.severity}
+                      </Badge>
+                    </div>
+                    <p>{event.event}</p>
+                  </div>
                 ))}
               </div>
             </div>
-            
-            {debugMode && (
-              <div className="border rounded-lg p-3 font-mono text-xs">
-                <h4 className="font-medium text-sm mb-2">System Logs</h4>
-                <div className="bg-black/90 text-green-400 p-3 rounded h-32 overflow-y-auto">
-                  <p>[{new Date().toISOString()}] Owner session initialized</p>
-                  <p>[{new Date().toISOString()}] Advanced mode activated</p>
-                  <p>[{new Date().toISOString()}] Running security scan...</p>
-                  <p>[{new Date().toISOString()}] Security scan complete: No threats detected</p>
-                  <p>[{new Date().toISOString()}] Memory usage: 42%</p>
-                  <p>[{new Date().toISOString()}] CPU load: 23%</p>
-                  <p>[{new Date().toISOString()}] Active connections: 17</p>
-                  {superAdminAccess && (
-                    <>
-                      <p className="text-yellow-400">[{new Date().toISOString()}] ⚠️ SUPER ADMIN MODE ACTIVE</p>
-                      <p className="text-yellow-400">[{new Date().toISOString()}] Extended privileges granted to admin users</p>
-                    </>
-                  )}
-                </div>
+
+            <div>
+              <h3 className="font-medium mb-2 flex items-center">
+                <Network className="mr-2 h-4 w-4 text-blue-500" />
+                User Locations
+              </h3>
+              <div className="space-y-2">
+                {lastLocationData.map((item, index) => (
+                  <div key={index} className="flex items-center justify-between p-2 border-b">
+                    <span>{item.location}</span>
+                    <Badge variant="secondary">{item.count} users</Badge>
+                  </div>
+                ))}
               </div>
-            )}
-          </>
-        )}
-      </CardContent>
-    </Card>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* System Performance Panel */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl font-bold flex items-center">
+            <Zap className="mr-2 h-5 w-5 text-primary" />
+            System Performance
+          </CardTitle>
+          <CardDescription>
+            Server resources and performance monitoring
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-medium">Server Load</h3>
+                <span className={`text-sm ${serverLoad > 70 ? 'text-destructive' : 'text-muted-foreground'}`}>
+                  {serverLoad}%
+                </span>
+              </div>
+              <Progress value={serverLoad} className="h-2" />
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-medium">Power Level</h3>
+                <span className="text-sm text-muted-foreground">{powerLevel}%</span>
+              </div>
+              <Progress value={powerLevel} className="h-2 bg-muted" />
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-medium">Active Users</h3>
+                <span className="text-sm text-muted-foreground">{userActivity.toLocaleString()}</span>
+              </div>
+              <Progress value={(userActivity / 10000) * 100} max={100} className="h-2" />
+            </div>
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-4">
+            <Button className="flex-1" onClick={boostServerPower}>
+              <Power className="mr-2 h-4 w-4" />
+              Boost Server Power
+            </Button>
+            
+            <Button variant="outline" className="flex-1">
+              <Wifi className="mr-2 h-4 w-4" />
+              Test Network Speed
+            </Button>
+            
+            <Button variant="outline" className="flex-1">
+              <ArrowUpDown className="mr-2 h-4 w-4" />
+              Balance Server Load
+            </Button>
+          </div>
+
+          <div className="flex justify-between items-center mt-6 p-3 border rounded-lg bg-secondary/20">
+            <div className="flex items-center">
+              <Radio className="mr-2 h-5 w-5 text-green-500 animate-pulse" />
+              <span>System Status: <strong>Operational</strong></span>
+            </div>
+            
+            <div className="flex items-center">
+              <span className="text-sm text-muted-foreground mr-2">Response Time: 76ms</span>
+              <Badge variant="outline" className="bg-green-500/10 text-green-500">Excellent</Badge>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Advanced Tools */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl font-bold flex items-center">
+            <Users className="mr-2 h-5 w-5 text-primary" />
+            Advanced Management Tools
+          </CardTitle>
+          <CardDescription>
+            Powerful user and content management utilities
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h3 className="font-medium mb-4 flex items-center">
+                <Users className="mr-2 h-4 w-4" />
+                User Control Panel
+              </h3>
+              <div className="space-y-3">
+                <Button variant="outline" className="w-full justify-start">
+                  <ScanFace className="mr-2 h-4 w-4" />
+                  User Impersonation Mode
+                </Button>
+                <Button variant="outline" className="w-full justify-start">
+                  <Trash className="mr-2 h-4 w-4" />
+                  Bulk User Actions
+                </Button>
+                <Button variant="outline" className="w-full justify-start">
+                  <Search className="mr-2 h-4 w-4" />
+                  Advanced User Search
+                </Button>
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="font-medium mb-4 flex items-center">
+                <MessageSquare className="mr-2 h-4 w-4" />
+                Content Tools
+              </h3>
+              <div className="space-y-3">
+                <Button variant="outline" className="w-full justify-start">
+                  <Bot className="mr-2 h-4 w-4" />
+                  AI Content Analysis
+                </Button>
+                <Button variant="outline" className="w-full justify-start">
+                  <Search className="mr-2 h-4 w-4" />
+                  Global Content Search
+                </Button>
+                <Button variant="outline" className="w-full justify-start">
+                  <Trash className="mr-2 h-4 w-4" />
+                  Bulk Content Moderation
+                </Button>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
