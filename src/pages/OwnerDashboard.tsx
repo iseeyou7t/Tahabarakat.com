@@ -14,6 +14,7 @@ import {
   ShieldAlert,
   Settings,
   Server,
+  Zap,
 } from "lucide-react";
 
 // Import refactored components
@@ -26,6 +27,7 @@ import {
   SettingsTab,
   SystemTab
 } from "@/components/owner";
+import AdvancedPowerPanel from "@/components/owner/AdvancedPowerPanel";
 
 const OwnerDashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -225,7 +227,7 @@ const OwnerDashboard = () => {
       <DashboardHeader handleLogout={handleLogout} />
 
       <Tabs defaultValue="dashboard" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="dashboard">
             <BarChart2 className="mr-2 h-4 w-4" />
             Dashboard
@@ -245,6 +247,10 @@ const OwnerDashboard = () => {
           <TabsTrigger value="system">
             <Server className="mr-2 h-4 w-4" />
             System
+          </TabsTrigger>
+          <TabsTrigger value="power" className="bg-primary/10 hover:bg-primary/20">
+            <Zap className="mr-2 h-4 w-4 text-primary" />
+            Powers
           </TabsTrigger>
         </TabsList>
         
@@ -312,6 +318,10 @@ const OwnerDashboard = () => {
             backupSchedule={backupSchedule}
             toggleBackupSchedule={toggleBackupSchedule}
           />
+        </TabsContent>
+        
+        <TabsContent value="power" className="space-y-4 mt-6">
+          <AdvancedPowerPanel />
         </TabsContent>
       </Tabs>
     </div>
