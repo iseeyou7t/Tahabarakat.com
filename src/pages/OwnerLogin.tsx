@@ -9,7 +9,9 @@ import { authenticateOwner } from "@/services/AuthService";
 import { Shield, Lock, Fingerprint, Eye, EyeOff, UserCog, LogIn, User, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { AnimatedBackground, ParticleEffect, TypewriterText, containerVariants, itemVariants } from "@/utils/animationUtils";
+import PremiumAnimation from "@/components/owner/PremiumAnimation";
+import GradientBlobs from "@/components/owner/GradientBlobs";
+import { TypewriterText, containerVariants, itemVariants } from "@/utils/animationUtils";
 
 const OwnerLogin = () => {
   const [username, setUsername] = useState("");
@@ -105,29 +107,9 @@ const OwnerLogin = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4 bg-gradient-to-br from-background/80 to-primary/5 relative overflow-hidden">
-      <AnimatedBackground />
-      <ParticleEffect />
-      
-      {/* Animated background elements */}
-      <div className="absolute inset-0 -z-10">
-        <motion.div
-          className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-primary/5 blur-3xl"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-accent/5 blur-3xl"
-          animate={{
-            scale: [1.2, 1, 1.2],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        />
-      </div>
+    <div className="flex min-h-screen items-center justify-center p-4 relative overflow-hidden">
+      <PremiumAnimation />
+      <GradientBlobs />
       
       <motion.div 
         className="w-full max-w-md"
@@ -144,38 +126,29 @@ const OwnerLogin = () => {
             transition={{ duration: 0.3 }}
             className="login-card"
           >
-            <Card className="border-2 backdrop-blur-sm bg-background/90 overflow-hidden relative">
-              {/* Animated glow border */}
-              <motion.div
-                className="absolute inset-0 rounded-lg opacity-0"
-                animate={{
-                  boxShadow: [
-                    "0 0 0 1px rgba(var(--primary), 0.3)",
-                    "0 0 0 2px rgba(var(--primary), 0.6)",
-                    "0 0 0 1px rgba(var(--primary), 0.3)"
-                  ],
-                  opacity: 1
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
+            <Card className="border border-white/20 glass-card shadow-xl overflow-hidden relative backdrop-blur-md bg-gradient-to-br from-background/80 to-secondary/10">
+              {/* Animated border glow */}
+              <div className="absolute inset-0 pointer-events-none">
+                <motion.div
+                  className="absolute inset-0 rounded-lg opacity-0"
+                  animate={{
+                    boxShadow: [
+                      "0 0 0 1px rgba(var(--primary), 0.3)",
+                      "0 0 10px 2px rgba(var(--primary), 0.6)",
+                      "0 0 0 1px rgba(var(--primary), 0.3)"
+                    ],
+                    opacity: 1
+                  }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                />
+              </div>
               
-              {/* Animated gradient overlay */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-accent/10 opacity-0"
-                animate={{
-                  opacity: [0, 0.3, 0],
-                  x: ['-100%', '100%']
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  repeatDelay: 2
-                }}
-              />
+              {/* Subtle gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 mix-blend-overlay pointer-events-none" />
               
-              <CardHeader className="space-y-1 text-center">
+              <CardHeader className="space-y-1 text-center pb-2">
                 <motion.div 
-                  className="flex justify-center mb-2"
+                  className="flex justify-center mb-3"
                   initial={{ scale: 0, rotate: -180 }}
                   animate={{ scale: 1, rotate: 0 }}
                   transition={{ 
@@ -188,21 +161,21 @@ const OwnerLogin = () => {
                   {step === 1 ? (
                     <div className="relative">
                       <motion.div
-                        className="absolute inset-0 rounded-full bg-primary/20 blur-md"
+                        className="absolute inset-0 rounded-full bg-primary/20 blur-lg"
                         animate={{
                           scale: [1, 1.2, 1],
                           opacity: [0.5, 0.8, 0.5]
                         }}
                         transition={{ duration: 3, repeat: Infinity }}
                       />
-                      <motion.div className="bg-background/40 backdrop-blur-sm p-4 rounded-full relative z-10">
+                      <motion.div className="frosted-glass p-4 rounded-full relative z-10 shadow-lg">
                         <Shield className="h-12 w-12 text-primary" />
                       </motion.div>
                     </div>
                   ) : (
                     <div className="relative">
                       <motion.div
-                        className="absolute inset-0 rounded-full bg-primary/20 blur-md"
+                        className="absolute inset-0 rounded-full bg-primary/20 blur-lg"
                         animate={{
                           scale: [1, 1.2, 1],
                           opacity: [0.5, 0.8, 0.5]
@@ -210,7 +183,7 @@ const OwnerLogin = () => {
                         transition={{ duration: 1.5, repeat: Infinity }}
                       />
                       <motion.div 
-                        className="bg-background/40 backdrop-blur-sm p-4 rounded-full relative z-10"
+                        className="frosted-glass p-4 rounded-full relative z-10 shadow-lg"
                         animate={{ 
                           boxShadow: fingerScanComplete >= 100 
                             ? ["0 0 0 0 rgba(var(--primary), 0.7)", "0 0 20px 10px rgba(var(--primary), 0)", "0 0 0 0 rgba(var(--primary), 0)"] 
@@ -226,17 +199,17 @@ const OwnerLogin = () => {
                 
                 <motion.div variants={containerVariants} initial="hidden" animate="visible">
                   <motion.div variants={itemVariants}>
-                    <CardTitle className="text-2xl font-bold">
-                      {step === 1 ? "Owner Authentication" : "Security Verification"}
+                    <CardTitle className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-primary animate-gradient bg-[length:200%_auto]">
+                      {step === 1 ? "OWNER AUTHENTICATION" : "SECURITY VERIFICATION"}
                     </CardTitle>
                   </motion.div>
                   
                   <motion.div variants={itemVariants}>
-                    <CardDescription>
+                    <CardDescription className="text-foreground/80 mt-2">
                       <TypewriterText
                         text={
                           step === 1
-                            ? "Enter your credentials to access the owner dashboard"
+                            ? "Enter your credentials to access the control center"
                             : "Enter the 6-digit security code to complete verification"
                         }
                         className="inline-block"
@@ -247,7 +220,7 @@ const OwnerLogin = () => {
               </CardHeader>
               
               <form onSubmit={handleLogin}>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 px-6">
                   <motion.div variants={containerVariants} initial="hidden" animate="visible">
                     {step === 1 ? (
                       <>
@@ -273,7 +246,7 @@ const OwnerLogin = () => {
                               onChange={(e) => setUsername(e.target.value)}
                               onFocus={() => setActiveInput('username')}
                               onBlur={() => setActiveInput(null)}
-                              className="relative bg-background border-primary/20"
+                              className="relative bg-background/40 backdrop-blur-sm border-primary/20 focus-visible:ring-primary/50 shadow-sm"
                               required
                             />
                           </div>
@@ -302,7 +275,7 @@ const OwnerLogin = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 onFocus={() => setActiveInput('password')}
                                 onBlur={() => setActiveInput(null)}
-                                className="pr-10 relative bg-background border-primary/20"
+                                className="pr-10 relative bg-background/40 backdrop-blur-sm border-primary/20 focus-visible:ring-primary/50 shadow-sm"
                                 required
                               />
                               <button
@@ -349,14 +322,14 @@ const OwnerLogin = () => {
                               onBlur={() => setActiveInput(null)}
                               required
                               maxLength={6}
-                              className="font-mono text-center text-lg tracking-widest border-primary/20 bg-background"
+                              className="font-mono text-center text-lg tracking-widest border-primary/20 bg-background/40 backdrop-blur-sm focus-visible:ring-primary/50 shadow-sm"
                             />
                           </div>
                         </div>
                         
                         {/* Fingerprint scanner progress */}
                         <motion.div 
-                          className="mt-6 relative h-2 bg-muted rounded-full overflow-hidden"
+                          className="mt-6 relative h-2 bg-muted rounded-full overflow-hidden shadow-inner"
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.3 }}
@@ -417,13 +390,13 @@ const OwnerLogin = () => {
                   </motion.div>
                 </CardContent>
                 
-                <CardFooter>
+                <CardFooter className="px-6 pb-6">
                   <motion.div className="w-full" variants={itemVariants}>
                     <Button
                       type="submit"
-                      className="w-full relative overflow-hidden"
+                      className="w-full relative overflow-hidden button-glow"
                       disabled={isLoading || (step === 2 && fingerScanComplete < 100)}
-                      variant={step === 1 ? "default" : "outline"}
+                      variant="premium"
                     >
                       {/* Button shine effect */}
                       <motion.div
