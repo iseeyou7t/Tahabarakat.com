@@ -115,6 +115,46 @@ export default {
 				'rotate-slow': {
 					'0%': { transform: 'rotate(0deg)' },
 					'100%': { transform: 'rotate(360deg)' }
+				},
+				'shine': {
+					'0%': { transform: 'translateX(-100%)' },
+					'100%': { transform: 'translateX(100%)' }
+				},
+				'ripple': {
+					'0%': { transform: 'scale(0.8)', opacity: '1' },
+					'100%': { transform: 'scale(2)', opacity: '0' }
+				},
+				'gradient-move': {
+					'0%': { backgroundPosition: '0% 50%' },
+					'50%': { backgroundPosition: '100% 50%' },
+					'100%': { backgroundPosition: '0% 50%' }
+				},
+				'morph': {
+					'0%': { borderRadius: '40% 60% 60% 40% / 60% 30% 70% 40%' },
+					'100%': { borderRadius: '40% 60%' }
+				},
+				'slide-in-right': {
+					'0%': { transform: 'translateX(100%)' },
+					'100%': { transform: 'translateX(0)' }
+				},
+				'slide-out-right': {
+					'0%': { transform: 'translateX(0)' },
+					'100%': { transform: 'translateX(100%)' }
+				},
+				'scale-in': {
+					'0%': { transform: 'scale(0.95)', opacity: '0' },
+					'100%': { transform: 'scale(1)', opacity: '1' }
+				},
+				'scale-out': {
+					'0%': { transform: 'scale(1)', opacity: '1' },
+					'100%': { transform: 'scale(0.95)', opacity: '0' }
+				},
+				'bounce-subtle': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-5px)' }
+				},
+				'ping-subtle': {
+					'75%, 100%': { transform: 'scale(1.1)', opacity: '0' }
 				}
 			},
 			animation: {
@@ -123,7 +163,17 @@ export default {
 				'fade-in': 'fade-in 0.5s ease-out forwards',
 				'float': 'float 3s ease-in-out infinite',
 				'pulse-glow': 'pulse-glow 2s infinite',
-				'rotate-slow': 'rotate-slow 15s linear infinite'
+				'rotate-slow': 'rotate-slow 15s linear infinite',
+				'shine': 'shine 1.5s ease-in-out infinite',
+				'ripple': 'ripple 1s linear infinite',
+				'gradient': 'gradient-move 3s ease infinite',
+				'morph': 'morph 8s ease-in-out infinite',
+				'slide-in-right': 'slide-in-right 0.3s ease-out',
+				'slide-out-right': 'slide-out-right 0.3s ease-out',
+				'scale-in': 'scale-in 0.2s ease-out',
+				'scale-out': 'scale-out 0.2s ease-out',
+				'bounce-subtle': 'bounce-subtle 2s ease-in-out infinite',
+				'ping-subtle': 'ping-subtle 1.5s cubic-bezier(0, 0, 0.2, 1) infinite'
 			}
 		}
 	},
