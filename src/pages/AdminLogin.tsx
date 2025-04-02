@@ -1,53 +1,31 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Lock, User } from "lucide-react";
-
-// This is a simple admin authentication for demo purposes
-// In a real application, you should use a more secure approach
-const ADMIN_USERNAME = "tahabarakat";
-const ADMIN_PASSWORD = "taha1234";
-
-const formSchema = z.object({
-  username: z.string().min(1, "Username is required"),
-  password: z.string().min(1, "Password is required"),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import { authenticateAdmin } from "@/services/AuthService";
 
 const AdminLogin = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      username: "",
-      password: "",
-    },
-  });
-
-  const onSubmit = (values: FormValues) => {
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate a network request
+
+    // Simulate API call delay
     setTimeout(() => {
-      if (values.username === ADMIN_USERNAME && values.password === ADMIN_PASSWORD) {
-        // Set admin authentication in localStorage
-        localStorage.setItem("adminAuthenticated", "true");
+      const isAuthenticated = authenticateAdmin({ username, password });
+      
+      if (isAuthenticated) {
         toast({
           title: "Login Successful",
           description: "Welcome to the admin dashboard",
-          variant: "default",
         });
         navigate("/admin/dashboard");
       } else {
@@ -57,75 +35,57 @@ const AdminLogin = () => {
           variant: "destructive",
         });
       }
+      
       setIsLoading(false);
     }, 1000);
   };
 
   return (
-    <div className="container mx-auto flex min-h-screen items-center justify-center px-4 py-8">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Admin Login</CardTitle>
-          <CardDescription>
-            Enter your credentials to access the admin dashboard
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <div className="flex items-center border rounded-md px-3 focus-within:ring-2 focus-within:ring-ring">
-                        <User className="w-5 h-5 text-muted-foreground mr-2" />
-                        <Input
-                          placeholder="Enter admin username"
-                          className="border-0 focus-visible:ring-0 p-0"
-                          {...field}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <div className="flex items-center border rounded-md px-3 focus-within:ring-2 focus-within:ring-ring">
-                        <Lock className="w-5 h-5 text-muted-foreground mr-2" />
-                        <Input
-                          type="password"
-                          placeholder="Enter admin password"
-                          className="border-0 focus-visible:ring-0 p-0"
-                          {...field}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+    <div className="flex min-h-screen items-center justify-center p-4 bg-gradient-to-br from-background to-muted/30">
+      <div className="w-full max-w-md">
+        <Card className="border-2">
+          <CardHeader className="space-y-1 text-center">
+            <CardTitle className="text-2xl font-bold">Admin Login</CardTitle>
+            <CardDescription>
+              Enter your credentials to access the admin dashboard
+            </CardDescription>
+          </CardHeader>
+          <form onSubmit={handleLogin}>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium" htmlFor="username">Username</label>
+                <Input
+                  id="username"
+                  type="text"
+                  placeholder="Enter your username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium" htmlFor="password">Password</label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+            </CardContent>
+            <CardFooter>
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Logging in..." : "Login"}
               </Button>
-            </form>
-          </Form>
-        </CardContent>
-        <CardFooter className="flex flex-col">
-          <p className="text-xs text-muted-foreground text-center">
-            Note: This is a demo admin area. Use "admin" as username and "password123" as password.
-          </p>
-        </CardFooter>
-      </Card>
+            </CardFooter>
+          </form>
+        </Card>
+        <div className="mt-4 text-center text-sm text-muted-foreground">
+          <p>Default admin: tahabarakat / taha1234</p>
+        </div>
+      </div>
     </div>
   );
 };

@@ -5,21 +5,48 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
+import { getCurrentAdminCredentials, updateAdminCredentials } from "@/services/AuthService";
+import { useToast } from "@/hooks/use-toast";
 
 interface AdminCredentials {
   username: string;
   password: string;
 }
 
-interface AdminsTabProps {
-  adminCredentials: AdminCredentials;
-  setAdminCredentials: (creds: AdminCredentials) => void;
-  updateAdminCredentials: () => void;
-  isSaving: boolean;
-}
-
-const AdminsTab = ({ adminCredentials, setAdminCredentials, updateAdminCredentials, isSaving }: AdminsTabProps) => {
+const AdminsTab = () => {
+  const [adminCredentials, setAdminCredentials] = useState<AdminCredentials>(
+    getCurrentAdminCredentials()
+  );
   const [isAdminPasswordVisible, setIsAdminPasswordVisible] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const { toast } = useToast();
+
+  const handleUpdateAdminCredentials = () => {
+    setIsSaving(true);
+    
+    // Validate input
+    if (!adminCredentials.username || !adminCredentials.password) {
+      toast({
+        title: "Validation Error",
+        description: "Username and password cannot be empty",
+        variant: "destructive",
+      });
+      setIsSaving(false);
+      return;
+    }
+    
+    // Update the admin credentials
+    setTimeout(() => {
+      updateAdminCredentials(adminCredentials);
+      
+      toast({
+        title: "Admin Credentials Updated",
+        description: "The admin login credentials have been changed",
+      });
+      
+      setIsSaving(false);
+    }, 1000);
+  };
 
   return (
     <Card>
@@ -60,7 +87,7 @@ const AdminsTab = ({ adminCredentials, setAdminCredentials, updateAdminCredentia
               </div>
             </div>
           </div>
-          <Button onClick={updateAdminCredentials} disabled={isSaving}>
+          <Button onClick={handleUpdateAdminCredentials} disabled={isSaving}>
             {isSaving ? "Updating..." : "Update Admin Credentials"}
           </Button>
         </div>
