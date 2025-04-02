@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
-import { getCurrentAdminCredentials, updateAdminCredentials } from "@/services/AuthService";
+import { updateAdminCredentials as updateAuthServiceAdminCredentials } from "@/services/AuthService";
 import { useToast } from "@/hooks/use-toast";
 
 interface AdminCredentials {
@@ -13,17 +13,24 @@ interface AdminCredentials {
   password: string;
 }
 
-const AdminsTab = () => {
-  const [adminCredentials, setAdminCredentials] = useState<AdminCredentials>(
-    getCurrentAdminCredentials()
-  );
+interface AdminsTabProps {
+  adminCredentials: AdminCredentials;
+  setAdminCredentials: (credentials: AdminCredentials) => void;
+  updateAdminCredentials: () => void;
+  isSaving: boolean;
+}
+
+const AdminsTab = ({ 
+  adminCredentials, 
+  setAdminCredentials, 
+  updateAdminCredentials, 
+  isSaving 
+}: AdminsTabProps) => {
   const [isAdminPasswordVisible, setIsAdminPasswordVisible] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
 
+  // Handle validation before calling the parent updateAdminCredentials function
   const handleUpdateAdminCredentials = () => {
-    setIsSaving(true);
-    
     // Validate input
     if (!adminCredentials.username || !adminCredentials.password) {
       toast({
@@ -31,21 +38,11 @@ const AdminsTab = () => {
         description: "Username and password cannot be empty",
         variant: "destructive",
       });
-      setIsSaving(false);
       return;
     }
     
-    // Update the admin credentials
-    setTimeout(() => {
-      updateAdminCredentials(adminCredentials);
-      
-      toast({
-        title: "Admin Credentials Updated",
-        description: "The admin login credentials have been changed",
-      });
-      
-      setIsSaving(false);
-    }, 1000);
+    // Call the parent update function
+    updateAdminCredentials();
   };
 
   return (
