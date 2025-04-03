@@ -13,6 +13,7 @@ const GradientBlobs = () => {
         animate={{
           x: [0, 20, -10, 5, 0],
           y: [0, -20, 10, -5, 0],
+          scale: [1, 1.05, 0.95, 1.02, 1],
         }}
         transition={{
           repeat: Infinity,
@@ -29,6 +30,7 @@ const GradientBlobs = () => {
         animate={{
           x: [0, -30, 20, -10, 0],
           y: [0, 20, -15, 10, 0],
+          scale: [1, 0.95, 1.05, 0.98, 1],
         }}
         transition={{
           repeat: Infinity,
@@ -45,6 +47,7 @@ const GradientBlobs = () => {
         animate={{
           x: [0, 20, -30, 10, 0],
           y: [0, -10, 20, -5, 0],
+          scale: [1, 1.1, 0.9, 1.05, 1],
         }}
         transition={{
           repeat: Infinity,
@@ -62,6 +65,7 @@ const GradientBlobs = () => {
         animate={{
           x: [0, -15, 25, -5, 0],
           y: [0, 15, -10, 5, 0],
+          scale: [1, 0.9, 1.1, 0.95, 1],
         }}
         transition={{
           repeat: Infinity,
@@ -70,6 +74,54 @@ const GradientBlobs = () => {
           delay: 1
         }}
       />
+      
+      {/* Adding subtle star/particle effects */}
+      {Array.from({ length: 15 }).map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute rounded-full bg-white"
+          style={{
+            width: Math.random() * 3 + 1,
+            height: Math.random() * 3 + 1,
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            opacity: Math.random() * 0.5 + 0.2,
+          }}
+          animate={{
+            opacity: [0.2, 0.8, 0.2],
+            scale: [1, 1.5, 1],
+          }}
+          transition={{
+            duration: Math.random() * 3 + 2,
+            repeat: Infinity,
+            delay: Math.random() * 5,
+          }}
+        />
+      ))}
+      
+      {/* Adding subtle motion lines */}
+      {Array.from({ length: 8 }).map((_, i) => (
+        <motion.div
+          key={`line-${i}`}
+          className="absolute bg-gradient-to-r from-primary/5 to-accent/5"
+          style={{
+            height: `${Math.random() * 150 + 50}px`,
+            width: "1px",
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            transform: `rotate(${Math.random() * 360}deg)`,
+          }}
+          animate={{
+            opacity: [0, 0.5, 0],
+            height: ["0px", `${Math.random() * 150 + 100}px`, "0px"],
+          }}
+          transition={{
+            duration: Math.random() * 5 + 5,
+            repeat: Infinity,
+            delay: Math.random() * 10,
+          }}
+        />
+      ))}
     </div>
   );
 };
