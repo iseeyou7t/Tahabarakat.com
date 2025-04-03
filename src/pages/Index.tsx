@@ -17,19 +17,35 @@ const Index: React.FC<IndexProps> = ({ onLogout }) => {
         className="max-w-3xl mx-auto text-center"
       >
         <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-primary animate-gradient bg-[length:200%_auto]">
-          Welcome to the Application
+          Welcome to Taha Barakat's Application
         </h1>
         
         <p className="text-lg text-muted-foreground mb-8">
           You have successfully logged in with the correct credentials.
         </p>
         
-        <div className="flex justify-center space-x-4">
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+          <Button 
+            variant="default"
+            className="px-6 w-full sm:w-auto"
+            onClick={() => window.location.href = "/admin/dashboard"}
+          >
+            Go to Admin Dashboard
+          </Button>
+          
+          <Button 
+            variant="outline"
+            className="px-6 w-full sm:w-auto"
+            onClick={() => window.location.href = "/owner/dashboard"}
+          >
+            Go to Owner Dashboard
+          </Button>
+          
           {onLogout && (
             <Button 
               onClick={onLogout}
-              variant="outline"
-              className="px-6"
+              variant="destructive"
+              className="px-6 w-full sm:w-auto"
             >
               Logout
             </Button>
