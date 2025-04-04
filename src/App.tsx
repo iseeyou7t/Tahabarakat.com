@@ -40,10 +40,13 @@ const App: React.FC = () => {
   
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
+    localStorage.setItem("isAuthenticated", "true");
   };
   
   const handleLogout = () => {
     localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("adminAuthenticated");
+    localStorage.removeItem("ownerAuthenticated");
     setIsAuthenticated(false);
   };
 
