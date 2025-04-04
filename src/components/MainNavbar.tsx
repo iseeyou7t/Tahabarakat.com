@@ -42,7 +42,7 @@ const MainNavbar: React.FC<NavbarProps> = ({ onLogout }) => {
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
             <a href="/" className="text-lg font-bold">
-              <span className="text-primary">Taha</span> Barakat
+              <span className="text-primary">Taha</span> Barakat Portfolio
             </a>
           </div>
 
